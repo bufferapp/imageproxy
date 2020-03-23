@@ -124,7 +124,7 @@ func main() {
 	fmt.Printf("imageproxy listening on %s\n", server.Addr)
 
 	http.Handle("/", handler)
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	log.Fatal(http.ListenAndServe())
 }
 
 // tieredCache allows specifying multiple caches via flags, which will create
