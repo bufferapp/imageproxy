@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -37,6 +38,9 @@ import (
 	"willnorris.com/go/imageproxy"
 	"willnorris.com/go/imageproxy/internal/gcscache"
 	"willnorris.com/go/imageproxy/internal/s3cache"
+
+	httptrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 const defaultMemorySize = 100
@@ -59,6 +63,16 @@ func init() {
 }
 
 func main() {
+
+	// add datadog tracing
+	addrData := net.JoinHostPort(
+		os.Getenv("DD_AGENT_HOST"),
+		os.Getenv("DD_TRACE_AGENT_PORT"),
+	)
+
+	tracer.Start(tracer.WithAgentAddr(addrData), tracer.WithEnv(os.Getenv("APM_ENV")))
+	// tracer.Stop() not executed until the surrounding function returns
+	defer tracer.Stop()
 
 	flag.Parse()
 	if *remoteHosts == "" {
@@ -100,14 +114,17 @@ func main() {
 	p.ScaleUp = *scaleUp
 	p.Verbose = *verbose
 
+	handler := httptrace.WrapHandler(p, os.Getenv("DD_SERVICE_NAME"), "/")
+
 	server := &http.Server{
 		Addr:    *addr,
-		Handler: p,
+		Handler: handler,
 	}
 
 	fmt.Printf("imageproxy listening on %s\n", server.Addr)
 
-	log.Fatal(server.ListenAndServe())
+	http.Handle("/", handler)
+	log.Fatal(http.ListenAndServe(*addr, handler))
 }
 
 // tieredCache allows specifying multiple caches via flags, which will create
