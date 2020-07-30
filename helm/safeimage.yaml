@@ -2,7 +2,7 @@ name: safeimage
 namespace: buffer
 deploymentUrl: "safeimage.buffer.com"
 chart: "buffercharts/buffer-service"
-chartVersion: "1.0.2"
+chartVersion: "1.1.1"
 cdEnabled: true
 cdBranchEnabled: true
 dockerfile: Dockerfile
