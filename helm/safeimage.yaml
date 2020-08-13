@@ -2,13 +2,14 @@ name: safeimage
 namespace: buffer
 deploymentUrl: "safeimage.buffer.com"
 chart: "buffercharts/buffer-service"
-chartVersion: "1.1.1"
+chartVersion: "1.2.0"
 cdEnabled: true
 cdBranchEnabled: true
 dockerfile: Dockerfile
 channel: svc-images
 clusterName: "kubeeast"
 track: stable
+latencySensitive: true
 replicaCount: 10
 
 image:
@@ -30,7 +31,6 @@ resources:
     cpu: 100m
   limits:
     memory: 1G
-    cpu: 400m
 extraSpecSpecs: {}
 healthcheck: # checkout https://github.com/bufferapp/EKG for complete docs
   enabled: false
