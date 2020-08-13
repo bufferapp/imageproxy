@@ -28,7 +28,7 @@ extraMainContainerValues:
 resources:
   requests:
     memory: 300M
-    cpu: 100m
+    cpu: 150m
   limits:
     memory: 1G
 extraSpecSpecs: {}
