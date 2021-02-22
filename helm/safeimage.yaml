@@ -27,10 +27,10 @@ extraMainContainerValues:
     timeoutSeconds: 1
 resources:
   requests:
-    memory: 300M
+    memory: 1500M
     cpu: 150m
   limits:
-    memory: 1G
+    memory: 1500M
 extraSpecSpecs: {}
 healthcheck: # checkout https://github.com/bufferapp/EKG for complete docs
   enabled: false
